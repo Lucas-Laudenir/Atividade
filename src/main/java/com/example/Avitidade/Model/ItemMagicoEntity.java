@@ -1,17 +1,46 @@
 package com.example.Avitidade.Model;
 
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+
+@Entity
 public class ItemMagicoEntity {
-    private long id ;
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private long id;
     private String nameItem;
-    private String itenTipo;
     private int forcaItem;
     private int defIten;
 
-    public ItemMagicoEntity(String nameItem, String itenTipo, int forcaItem, int defIten) {
+    private TipoItem tipo;
+
+    public ItemMagicoEntity() {
+
+    }
+
+    public enum TipoItem {
+        ARMA, ARMADURA, AMULETO
+    }
+
+    public void validarDeforAtak() {
+        if (forcaItem == 0 && defIten == 0) {
+            throw new IllegalArgumentException("Item tem que ter FORÇA ou DEFESA");
+        }
+        if (tipo == TipoItem.ARMA && defIten != 0) {
+            throw new IllegalArgumentException("Armas não tem DEFESA");
+        }
+        if (tipo == TipoItem.ARMADURA && forcaItem != 0) {
+            throw new IllegalArgumentException("Armaduras não tem FORÇA.");
+        }
+    }
+
+    public ItemMagicoEntity(String nameItem, int forcaItem, int defIten, TipoItem tipo) {
         this.nameItem = nameItem;
-        this.itenTipo = itenTipo;
         this.forcaItem = forcaItem;
         this.defIten = defIten;
+        this.tipo = tipo;
     }
 
     public long getId() {
@@ -30,14 +59,6 @@ public class ItemMagicoEntity {
         this.nameItem = nameItem;
     }
 
-    public String getItenTipo() {
-        return itenTipo;
-    }
-
-    public void setItenTipo(String itenTipo) {
-        this.itenTipo = itenTipo;
-    }
-
     public int getForcaItem() {
         return forcaItem;
     }
@@ -52,5 +73,13 @@ public class ItemMagicoEntity {
 
     public void setDefIten(int defIten) {
         this.defIten = defIten;
+    }
+
+    public TipoItem getTipo() {
+        return tipo;
+    }
+
+    public void setTipo(TipoItem tipo) {
+        this.tipo = tipo;
     }
 }

@@ -5,6 +5,7 @@ import com.example.Avitidade.Repository.ItenRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 
 import java.util.List;
 import java.util.Map;
@@ -14,14 +15,26 @@ public class ServiceMagicIten {
     @Autowired
     private ItenRepository repositoryItem;
 
-    public ItemMagicoEntity craeteItem (ItemMagicoEntity itemMagicoEntity){
-        itemMagicoEntity.setForcaItem(56);
-        itemMagicoEntity.setNameItem("espada");
-        itemMagicoEntity.setDefIten(56);
-        itemMagicoEntity.setItenTipo("Machado");
-        ItemMagicoEntity saveItem =  repositoryItem.save(itemMagicoEntity);
-        System.out.println("Item salvo: " + saveItem);
-        return saveItem;
+    public ItemMagicoEntity createItem(ItemMagicoEntity item) {
+
+        item.validarDeforAtak();
+
+        String tipo = item.getTipo().toString().toUpperCase();
+        if (!tipo.equals("ARMA") && !tipo.equals("ARMADURA") && !tipo.equals("AMULETO")) {
+            throw new IllegalArgumentException("Tipo inválido escolha usar -> ARMA, ARMADURA ou AMULETO.");
+        }
+
+        if (tipo.equals("ARMA")) {
+            item.setDefIten(0);
+        } else if (tipo.equals("ARMADURA")) {
+            item.setForcaItem(0);
+        }
+
+        if (item.getForcaItem() > 10 || item.getDefIten() > 10) {
+            throw new IllegalArgumentException("Força ou Defesa não podem ser maiores que 10.");
+        }
+
+        return repositoryItem.save(item);
     }
 
     @GetMapping
@@ -30,14 +43,13 @@ public class ServiceMagicIten {
         return tasks.stream()
                 .collect(Collectors.groupingBy(ItemMagicoEntity::getNameItem));
     }
-
+    @PutMapping
     public  ItemMagicoEntity updateItem(Long id, ItemMagicoEntity updateItem) {
-        ItemMagicoEntity itemMagicoEntity = repositoryItem.findById(id).orElseThrow(() -> new ServicePersonagem.ResourceNotFoundException(""));
-        itemMagicoEntity.setNameItem(itemMagicoEntity.getNameItem());
-        //personagem.setLIstaitemMagico(updatePersonagem.getLIstaitemMagico());
-        itemMagicoEntity.setDefIten(itemMagicoEntity.getDefIten());
-        itemMagicoEntity.setForcaItem(itemMagicoEntity.getForcaItem());
-        itemMagicoEntity.setItenTipo(itemMagicoEntity.getItenTipo());
+        ItemMagicoEntity itemMagicoEntity = repositoryItem.findById(id).orElseThrow(() -> new ServicePersonagem.ResourceNotFoundException("Item Roubado"));
+        itemMagicoEntity.setNameItem(updateItem.getNameItem());
+        itemMagicoEntity.setDefIten(updateItem.getDefIten());
+        itemMagicoEntity.setForcaItem(updateItem.getForcaItem());
+        itemMagicoEntity.setTipo(updateItem.getTipo());
         return repositoryItem.save(itemMagicoEntity);
     }
 

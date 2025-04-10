@@ -1,10 +1,11 @@
 package com.example.Avitidade.Service;
 
+import com.example.Avitidade.Model.ItemMagicoEntity;
 import com.example.Avitidade.Model.PersonagemEntity;
 import com.example.Avitidade.Repository.PersonagemRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 
 import java.util.List;
 import java.util.Map;
@@ -15,35 +16,35 @@ public class ServicePersonagem {
     @Autowired
     private PersonagemRepository repository;
 
-public PersonagemEntity craetePersonagem (PersonagemEntity personagemEntity){
-    personagemEntity.setDefPersonagem(56);
-    personagemEntity.setForcaPersonagem(56);
-    personagemEntity.setNamePersonagem("Rogerio");
-//    personagemEntity.setLIstaitemMagico();
-    personagemEntity.setClasse("Barbaro");
-    personagemEntity.setNomeAventureiro("Oliver");
-    personagemEntity.setLevel(56);
-    PersonagemEntity savePersonagem =  repository.save(personagemEntity);
-    System.out.println("Personagem salvo: " + savePersonagem);
-    return savePersonagem;
-}
+    public PersonagemEntity createPersonagem(PersonagemEntity personagemEntity) {
+        int total = personagemEntity.getForcaPersonagem() + personagemEntity.getDefPersonagem();
+        if (total > 10) {
+            throw new IllegalArgumentException("você está usando mais ponto do que o permitido :(");
+        }
+        return repository.save(personagemEntity);
+    }
 
-@GetMapping
-public Map<String, List<PersonagemEntity>> getTasksOrganizedByColumn() {
-    List<PersonagemEntity> tasks = repository.findAll();
-    return tasks.stream()
-            .collect(Collectors.groupingBy(PersonagemEntity::getNamePersonagem));
-}
+    public Map<String, List<PersonagemEntity>> getTasksOrganizedByColumn() {
+        List<PersonagemEntity> personagem = repository.findAll();
+        return personagem.stream()
+                .collect(Collectors.groupingBy(PersonagemEntity::getNamePersonagem));
+    }
 
+    public PersonagemEntity getById(Long id) {
+        return repository.findById(id).orElseThrow(() -> new ResourceNotFoundException("Personagem Fugiu"));
+    }
+
+    @PutMapping
     public  PersonagemEntity updatePersonagem(Long id, PersonagemEntity updatePersonagem) {
-        PersonagemEntity personagem = repository.findById(id).orElseThrow(() -> new ResourceNotFoundException(""));
+        PersonagemEntity personagem = repository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Personagem não encontrado"));
         personagem.setNamePersonagem(updatePersonagem.getNamePersonagem());
-        //personagem.setLIstaitemMagico(updatePersonagem.getLIstaitemMagico());
         personagem.setNomeAventureiro(updatePersonagem.getNomeAventureiro());
         personagem.setLevel(updatePersonagem.getLevel());
-        personagem.setClasse(personagem.getClasse());
-        personagem.setDefPersonagem(personagem.getDefPersonagem());
-        personagem.setForcaPersonagem(personagem.getForcaPersonagem());
+        personagem.setClasse(updatePersonagem.getClasse());
+        personagem.setForcaPersonagem(updatePersonagem.getForcaPersonagem());
+        personagem.setDefPersonagem(updatePersonagem.getDefPersonagem());
+        List<ItemMagicoEntity> novosItens = updatePersonagem.getItensMagicos();
         return repository.save(personagem);
     }
 
@@ -61,4 +62,10 @@ public Map<String, List<PersonagemEntity>> getTasksOrganizedByColumn() {
         return repository.findAll();
     }
 
+    public PersonagemEntity adicionarItemAoPersonagem(Long idPersonagem, ItemMagicoEntity novoItem) {
+        PersonagemEntity personagem = repository.findById(idPersonagem)
+                .orElseThrow(() -> new RuntimeException("Personagem não encontrado"));
+        personagem.adicionarItem(novoItem);
+        return repository.save(personagem);
+    }
 }
