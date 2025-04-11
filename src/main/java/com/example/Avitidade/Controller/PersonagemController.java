@@ -29,12 +29,8 @@ public class PersonagemController {
     })
     @PostMapping
     public ResponseEntity<PersonagemEntity> createPersonagem(@Valid @RequestBody PersonagemEntity personagem) {
-        try {
             PersonagemEntity createdPersonagem = servicePersonagem.createPersonagem(personagem);
             return new ResponseEntity<>(createdPersonagem, HttpStatus.CREATED);
-        } catch (IllegalArgumentException ex) {
-            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
-        }
     }
 
     @Operation(description = "Busca todos os personagem pelo ID")
@@ -55,7 +51,7 @@ public class PersonagemController {
     })
     @GetMapping("/{id}")
     public ResponseEntity<PersonagemEntity> getPersonagemById(@PathVariable Long id) {
-        PersonagemEntity personagem = servicePersonagem.getById(id); // Crie esse método no service
+        PersonagemEntity personagem = servicePersonagem.getById(id);
         return ResponseEntity.ok(personagem);
     }
 
@@ -65,15 +61,11 @@ public class PersonagemController {
             @ApiResponse(responseCode = "404", description = "Atualiza não encontrado")
     })
     @PutMapping("/{id}")
-    public ResponseEntity<?> updatePersonagem(@PathVariable Long id, @RequestBody PersonagemEntity updatePersonagem) {
-        try {
+    public ResponseEntity<?> updatePersonagem(@PathVariable Long id,
+                                              @RequestBody PersonagemEntity updatePersonagem) {
+
             PersonagemEntity personagemAtualizado = servicePersonagem.updatePersonagem(id, updatePersonagem);
             return ResponseEntity.ok(personagemAtualizado);
-        } catch (IllegalArgumentException e) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
-        } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Erro ao atualizar personagem: " + e.getMessage());
-        }
     }
 
     @Operation(description = "Deleta um personagem via ID")
@@ -84,9 +76,8 @@ public class PersonagemController {
     }
 
     @PatchMapping("/{id}/adicionar-item")
-    public ResponseEntity<PersonagemEntity> adicionarItem(
-            @PathVariable Long id,
-            @RequestBody ItemMagicoEntity item) {
+    public ResponseEntity<PersonagemEntity> adicionarItem(@PathVariable Long id,
+                                                          @RequestBody ItemMagicoEntity item) {
         PersonagemEntity personagemAtualizado = servicePersonagem.adicionarItemAoPersonagem(id, item);
         return ResponseEntity.ok(personagemAtualizado);
     }

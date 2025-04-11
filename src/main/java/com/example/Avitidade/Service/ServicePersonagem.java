@@ -37,7 +37,7 @@ public class ServicePersonagem {
     @PutMapping
     public  PersonagemEntity updatePersonagem(Long id, PersonagemEntity updatePersonagem) {
         PersonagemEntity personagem = repository.findById(id)
-                .orElseThrow(() -> new ResourceNotFoundException("Personagem não encontrado"));
+                .orElseThrow(() -> new ResourceNotFoundException("Personagem não Fugiu"));
         personagem.setNamePersonagem(updatePersonagem.getNamePersonagem());
         personagem.setNomeAventureiro(updatePersonagem.getNomeAventureiro());
         personagem.setLevel(updatePersonagem.getLevel());
@@ -64,7 +64,7 @@ public class ServicePersonagem {
 
     public PersonagemEntity adicionarItemAoPersonagem(Long idPersonagem, ItemMagicoEntity novoItem) {
         PersonagemEntity personagem = repository.findById(idPersonagem)
-                .orElseThrow(() -> new RuntimeException("Personagem não encontrado"));
+                .orElseThrow(() -> new RuntimeException("Personagem Fugiu"));
         personagem.adicionarItem(novoItem);
         return repository.save(personagem);
     }

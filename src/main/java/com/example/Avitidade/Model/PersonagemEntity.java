@@ -1,9 +1,6 @@
 package com.example.Avitidade.Model;
 
 import jakarta.persistence.*;
-import jakarta.validation.constraints.Min;
-import jakarta.validation.constraints.NotNull;
-
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -16,14 +13,12 @@ public class PersonagemEntity {
     private long idPersonagem;
     private String namePersonagem;
     private String nomeAventureiro;
-    @Enumerated(EnumType.STRING)
     private ClassePersonagem classe;
     private int level;
     private int forcaPersonagem;
     private int defPersonagem;
 
     @OneToMany(cascade = CascadeType.ALL)
-    @JoinColumn(name = "personagem_id") // cria a FK em ItemMagicoEntity
     private List<ItemMagicoEntity> itensMagicos = new ArrayList<>();
 
 
@@ -54,7 +49,7 @@ public class PersonagemEntity {
     public void adicionarItem(ItemMagicoEntity item) {
         if (item.getTipo() == ItemMagicoEntity.TipoItem.AMULETO &&
                 itensMagicos.stream().anyMatch(i -> i.getTipo() == ItemMagicoEntity.TipoItem.AMULETO)) {
-            throw new IllegalArgumentException("O personagem já possui um amuleto. Remova o amuleto existente antes de adicionar outro.");
+            throw new IllegalArgumentException("O personagem já possui um amuleto.");
         }
         this.itensMagicos.add(item);
     }

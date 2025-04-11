@@ -47,7 +47,8 @@ public class ItenController {
             @ApiResponse(responseCode = "400", description = "Dados inválidos")
     })
     @PutMapping("/{id}")
-    public ResponseEntity<ItemMagicoEntity> updateItem(@PathVariable() long id, @RequestBody ItemMagicoEntity updateItem) {
+    public ResponseEntity<ItemMagicoEntity> updateItem(@PathVariable() long id,
+                                                       @RequestBody ItemMagicoEntity updateItem) {
         ItemMagicoEntity Item = serviceMagicIten.updateItem(id, updateItem);
         return new ResponseEntity<>(Item, HttpStatus.OK);
     }

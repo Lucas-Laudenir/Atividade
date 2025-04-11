@@ -18,21 +18,13 @@ public class ServiceMagicIten {
     public ItemMagicoEntity createItem(ItemMagicoEntity item) {
 
         item.validarDeforAtak();
-
+        
         String tipo = item.getTipo().toString().toUpperCase();
         if (!tipo.equals("ARMA") && !tipo.equals("ARMADURA") && !tipo.equals("AMULETO")) {
-            throw new IllegalArgumentException("Tipo inválido escolha usar -> ARMA, ARMADURA ou AMULETO.");
-        }
-
-        if (tipo.equals("ARMA")) {
-            item.setDefIten(0);
-        } else if (tipo.equals("ARMADURA")) {
-            item.setForcaItem(0);
-        }
+            throw new IllegalArgumentException("Tipo inválido escolha usar -> ARMA, ARMADURA ou AMULETO.");}
 
         if (item.getForcaItem() > 10 || item.getDefIten() > 10) {
-            throw new IllegalArgumentException("Força ou Defesa não podem ser maiores que 10.");
-        }
+            throw new IllegalArgumentException("Força ou Defesa não podem ser maiores que 10.");}
 
         return repositoryItem.save(item);
     }
