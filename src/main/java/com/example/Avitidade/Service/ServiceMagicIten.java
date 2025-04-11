@@ -67,4 +67,8 @@ public class ServiceMagicIten {
         return repositoryItem.findAll();
     }
 
+    public ItemMagicoEntity getByIditen(Long id) {
+        return repositoryItem.findById(id)
+                .orElseThrow(() -> new RuntimeException("Item mágico não encontrado com o ID: " + id));
+    }
 }

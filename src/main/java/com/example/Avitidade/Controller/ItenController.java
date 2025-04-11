@@ -59,11 +59,11 @@ public class ItenController {
         return ResponseEntity.noContent().build();
     }
 
-//    @ApiOperation(value = "Busca um item mágico pelo ID")
-//    @GetMapping("/{id}")
-//    public ResponseEntity<ItemMagicoEntity> getItemById(@PathVariable Long id) {
-//        ItemMagicoEntity item = serviceMagicIten.getByIditen(id);
-//        return ResponseEntity.ok(item);
-//    }
+    @Operation(description = "Busca um item mágico pelo ID")
+    @GetMapping("/{id}")
+    public ResponseEntity<ItemMagicoEntity> getItemById(@PathVariable Long id) {
+        ItemMagicoEntity item = serviceMagicIten.getByIditen(id);
+        return ResponseEntity.ok(item);
+    }
 
 }
